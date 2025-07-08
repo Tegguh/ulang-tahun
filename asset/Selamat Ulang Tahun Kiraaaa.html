@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ulang Tahun Sekar Akira</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Pacifico&family=Poppins:wght@300;400;600;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            color: white;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            text-align: center;
+            position: relative;
+            z-index: 10;
+        }
+
+        h1 {
+            font-family: 'Pacifico', cursive;
+            font-size: 3rem;
+            margin-bottom: 2rem;
+            background: linear-gradient(to right, #f72585, #7209b7, #3a0ca3);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 3rem;
+            margin: 2rem auto;
+            max-width: 800px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .photo-placeholder {
+            width: 300px;
+            height: 300px;
+            border-radius: 100%;
+            margin: 0 auto 1.5rem;
+            background: rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            border: 5px solid #f72585;
+        }
+
+        .photo-placeholder img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .message {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+        }
+
+        .age-display {
+            font-size: 5rem;
+            font-weight: 700;
+            color: #f72585;
+            margin: 1rem 0;
+            text-shadow: 0 0 20px rgba(247, 37, 133, 0.5);
+        }
+
+        .music-control {
+            margin-top: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        .music-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .music-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .music-info {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="fireworks"></canvas>
+    
+    <div class="container">
+        <h1>Selamat Ulang Tahun Sekar Akira</h1>
+        
+        <div class="card">
+            <div class="photo-placeholder">
+                <img src="https://raw.githubusercontent.com/Tegguh/ulang-tahun/main/asset/sekar_akira.jpg" alt="Sekar Akira" />
+            </div>
+            
+            <div class="age-display" id="age">21</div>
+            
+            <div class="message">
+                <p>Di hari spesialmu ini, semoga tahun baru kehidupanmu dipenuhi dengan kebahagiaan, kesuksesan, dan semua hal baik yang kamu impikan!</p>
+                <p>Semoga selalu diberi kesehatan dan panjang umur. Selamat ulang tahun yang ke-21!</p>
+            </div>
+            
+            <div class="music-control">
+                <button class="music-btn" id="play-btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                    </svg>
+                </button>
+                <button class="music-btn" id="pause-btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="6" y="4" width="4" height="16"></rect>
+                        <rect x="14" y="4" width="4" height="16"></rect>
+                    </svg>
+                </button>
+                <div class="music-info">Lagu: Selamat Ulang Tahun - Jamrud</div>
+            </div>
+        </div>
+    </div>
+
+   <audio id="birthday-song" loop>
+  <source src="https://raw.githubusercontent.com/Tegguh/ulang-tahun/main/asset/Jamrud-Selamat_ulang_tahun.mp3" type="audio/mp3">
+</audio>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Elemen UI
+            const ageDisplay = document.getElementById('age');
+            const playBtn = document.getElementById('play-btn');
+            const pauseBtn = document.getElementById('pause-btn');
+            const audio = document.getElementById('birthday-song');
+            
+            // Animasi angka usia
+            let targetAge = 21;
+            let currentAge = 0;
+            const ageInterval = setInterval(() => {
+                currentAge++;
+                ageDisplay.textContent = currentAge;
+                
+                if (currentAge >= targetAge) {
+                    clearInterval(ageInterval);
+                }
+            }, 50);
+            
+            // Kontrol musik
+            playBtn.addEventListener('click', function() {
+                audio.play();
+                playBtn.style.display = 'none';
+                pauseBtn.style.display = 'flex';
+            });
+            
+            pauseBtn.addEventListener('click', function() {
+                audio.pause();
+                playBtn.style.display = 'flex';
+                pauseBtn.style.display = 'none';
+            });
+            
+            pauseBtn.style.display = 'none';
+            
+            // Kembang api
+            const canvas = document.getElementById('fireworks');
+            const ctx = canvas.getContext('2d');
+            
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            
+            window.addEventListener('resize', function() {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            });
+            
+            class Particle {
+                constructor(x, y, color) {
+                    this.x = x;
+                    this.y = y;
+                    this.color = color;
+                    this.velocity = {
+                        x: (Math.random() - 0.5) * 8,
+                        y: (Math.random() - 0.5) * 8
+                    };
+                    this.alpha = 1;
+                    this.decay = Math.random() * 0.015 + 0.01;
+                    this.size = Math.random() * 3 + 1;
+                }
+                
+                update() {
+                    this.velocity.y += 0.05;
+                    this.x += this.velocity.x;
+                    this.y += this.velocity.y;
+                    this.alpha -= this.decay;
+                }
+                
+                draw() {
+                    ctx.globalAlpha = this.alpha;
+                    ctx.fillStyle = this.color;
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            }
+            
+            let particles = [];
+            
+            function createFirework(x, y) {
+                const color = `hsl(${Math.random() * 360}, 100%, 50%)`;
+                const particleCount = 150;
+                
+                for (let i = 0; i < particleCount; i++) {
+                    particles.push(new Particle(x, y, color));
+                }
+            }
+            
+            function animate() {
+                requestAnimationFrame(animate);
+                
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                
+                for (let i = particles.length - 1; i >= 0; i--) {
+                    particles[i].update();
+                    particles[i].draw();
+                    
+                    if (particles[i].alpha <= 0) {
+                        particles.splice(i, 1);
+                    }
+                }
+            }
+            
+            // Automatic fireworks
+            function autoFireworks() {
+                const x = Math.random() * canvas.width;
+                const y = Math.random() * canvas.height / 2;
+                createFirework(x, y);
+                
+                // Add multiple bursts
+                if (Math.random() > 0.7) {
+                    for (let i = 0; i < 2; i++) {
+                        setTimeout(() => {
+                            const x = Math.random() * canvas.width;
+                            const y = Math.random() * canvas.height / 2;
+                            createFirework(x, y);
+                        }, i * 500);
+                    }
+                }
+                
+                // Random interval between 0.5s to 1.5s
+                setTimeout(autoFireworks, 500 + Math.random() * 1000);
+            }
+            
+            // Start auto fireworks
+            autoFireworks();
+            
+            // Otomatis memainkan lagu
+            setTimeout(() => {
+                audio.play();
+                playBtn.style.display = 'none';
+                pauseBtn.style.display = 'flex';
+            }, 1000);
+            
+            animate();
+        });
+    </script>
+</body>
+</html>

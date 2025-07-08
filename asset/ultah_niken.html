@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cyber Birthday Celebration</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --neon-blue: #0ff0fc;
+            --cyber-purple: #b026ff;
+            --matrix-green: #00ff41;
+            --metal-silver: #c0c0c0;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Orbitron', sans-serif;
+            background-color: #000;
+            color: var(--metal-silver);
+            overflow-x: hidden;
+            position: relative;
+            height: 100vh;
+        }
+        
+        #background-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+        
+        header {
+            padding: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.7);
+            box-shadow: 0 0 20px var(--neon-blue);
+            position: relative;
+        }
+        
+        .title {
+            font-size: 2.5rem;
+            background: linear-gradient(90deg, var(--neon-blue), var(--cyber-purple));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+        }
+        
+        .audio-controls {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .audio-btn {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--neon-blue);
+            color: var(--neon-blue);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .audio-btn:hover {
+            background: var(--neon-blue);
+            color: #000;
+            box-shadow: 0 0 15px var(--neon-blue);
+        }
+        
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2rem;
+            min-height: calc(100vh - 180px);
+        }
+        
+        .birthday-photo {
+            width: 300px;
+            height: 300px;
+            border: 3px solid var(--cyber-purple);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 0 30px var(--cyber-purple);
+            margin-bottom: 2rem;
+            position: relative;
+        }
+        
+        .birthday-photo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .message {
+            font-size: 1.5rem;
+            text-align: center;
+            margin: 2rem 0;
+            line-height: 1.6;
+            max-width: 600px;
+            background: linear-gradient(90deg, var(--metal-silver), var(--matrix-green));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            padding: 1rem;
+            border: 1px solid var(--neon-blue);
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 255, 65, 0.5);
+        }
+        
+        .gallery {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 2rem;
+            width: 100%;
+        }
+        
+        .gallery-title {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            color: var(--neon-blue);
+            text-shadow: 0 0 10px var(--neon-blue);
+        }
+        
+        .gallery-container {
+            position: relative;
+            width: 400px;
+            height: 400px;
+            overflow: hidden;
+            border: 2px solid var(--cyber-purple);
+            box-shadow: 0 0 20px var(--cyber-purple);
+            border-radius: 10px;
+        }
+        
+        .gallery-slide {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+        }
+        
+        .gallery-slide.active {
+            opacity: 1;
+        }
+        
+        .gallery-slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .gallery-nav {
+            margin-top: 1rem;
+        }
+        
+        .gallery-btn {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--neon-blue);
+            color: var(--neon-blue);
+            padding: 0.5rem 1rem;
+            margin: 0 0.5rem;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .gallery-btn:hover {
+            background: var(--neon-blue);
+            color: #000;
+            box-shadow: 0 0 15px var(--neon-blue);
+        }
+        
+        @keyframes glow {
+            0% { text-shadow: 0 0 5px var(--neon-blue); }
+            50% { text-shadow: 0 0 20px var(--neon-blue), 0 0 30px var(--cyber-purple); }
+            100% { text-shadow: 0 0 5px var(--neon-blue); }
+        }
+        
+        .cyber-date {
+            margin-top: 1rem;
+            font-size: 1.3rem;
+            color: var(--matrix-green);
+            animation: glow 2s infinite;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="background-canvas"></canvas>
+    
+    <header>
+        <h1 class="title">HAPPY BIRTHDAY NIKENNN</h1>
+        <div class="audio-controls">
+            <audio id="birthday-audio" loop>
+                <source src="https://raw.githubusercontent.com/Tegguh/ulang-tahun/main/asset/Jamrud-Selamat_ulang_tahun.mp3" type="audio/mp3">
+            </audio>
+            <button class="audio-btn" id="play-btn"><i class="fas fa-play"></i></button>
+            <button class="audio-btn" id="pause-btn"><i class="fas fa-pause"></i></button>
+        </div>
+    </header>
+    
+    <main class="main-content">
+        <div class="birthday-photo">
+            <img src="https://raw.githubusercontent.com/Tegguh/ulang-tahun/main/asset/niken-cyborg.png" alt="Futuristic cyborg birthday portrait with neon lighting and digital enhancements">
+        </div>
+        
+        <p class="message">
+            HAPPY BIRTHDAY NIKEN!<br>
+            Wishing you a wonderful year ahead, even though my birthday wish is a little late.<br>
+            sorry I'm late but this is a gift from me.
+        </p>
+        
+        <div class="cyber-date">
+            2025-Juni-30
+        </div>
+        
+        <div class="gallery">
+            <h2 class="gallery-title">CYBER MEMORIES</h2>
+            <div class="gallery-container">
+                <div class="gallery-slide active">
+                    <img src="https://raw.githubusercontent.com/Tegguh/ulang-tahun/main/asset/niken_1.jpg" alt="Cyborg celebration in futuristic city with glowing lights and holographic decorations">
+                </div>
+                <div class="gallery-slide">
+                    <img src="https://raw.githubusercontent.com/Tegguh/ulang-tahun/main/asset/niken_2.jpg" alt="High-tech birthday cake with LED candles and digital displays">
+                </div>
+                <div class="gallery-slide">
+                    <img src="https://raw.githubusercontent.com/Tegguh/ulang-tahun/main/asset/niken_3.jpg" alt="Group of enhanced humans and robots celebrating with neon drinks in cyberpunk bar">
+                </div>
+            </div>
+            <div class="gallery-nav">
+                <button class="gallery-btn" id="prev-btn">PREV</button>
+                <button class="gallery-btn" id="next-btn">NEXT</button>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Audio controls
+        const audio = document.getElementById('birthday-audio');
+        const playBtn = document.getElementById('play-btn');
+        const pauseBtn = document.getElementById('pause-btn');
+        
+        playBtn.addEventListener('click', () => {
+            audio.play();
+            playBtn.style.display = 'none';
+            pauseBtn.style.display = 'flex';
+        });
+        
+        pauseBtn.addEventListener('click', () => {
+            audio.pause();
+            pauseBtn.style.display = 'none';
+            playBtn.style.display = 'flex';
+        });
+        
+        // Image gallery
+        const slides = document.querySelectorAll('.gallery-slide');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        let currentSlide = 0;
+        
+        function showSlide(index) {
+            slides.forEach((slide, i) => {
+                slide.classList.toggle('active', i === index);
+            });
+        }
+        
+        prevBtn.addEventListener('click', () => {
+            currentSlide = (currentSlide - 1 + slides.length) % slides.length;
+            showSlide(currentSlide);
+        });
+        
+        nextBtn.addEventListener('click', () => {
+            currentSlide = (currentSlide + 1) % slides.length;
+            showSlide(currentSlide);
+        });
+        
+        // Background animation
+        const canvas = document.getElementById('background-canvas');
+        const ctx = canvas.getContext('2d');
+        
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+        
+        const particles = [];
+        const buildings = [];
+        const robotParts = [];
+        
+        // Create background buildings
+        for (let i = 0; i < 15; i++) {
+            buildings.push({
+                x: Math.random() * canvas.width,
+                width: 50 + Math.random() * 100,
+                height: 100 + Math.random() * 300,
+                speed: 0.2 + Math.random() * 0.8,
+                color: `hsl(${200 + Math.random() * 60}, 70%, 30%)`,
+                windows: Array(10).fill().map(() => ({
+                    x: Math.random(),
+                    y: Math.random(),
+                    lit: Math.random() > 0.3
+                }))
+            });
+        }
+        
+        // Create robot parts
+        const createRobot = () => {
+            return {
+                x: canvas.width / 2,
+                y: canvas.height + 100,
+                parts: [
+                    { type: 'head', radius: 30, offsetY: -100 },
+                    { type: 'torso', width: 60, height: 80, offsetY: -40 },
+                    { type: 'arm', left: true, length: 70, angle: 0.5, swing: 0.03 },
+                    { type: 'arm', left: false, length: 70, angle: -0.5, swing: -0.03 },
+                    { type: 'leg', left: true, length: 90, angle: 0.3, swing: 0.02 },
+                    { type: 'leg', left: false, length: 90, angle: -0.3, swing: -0.02 }
+                ],
+                rising: true
+            };
+        };
+        
+        const robot = createRobot();
+        
+        // Animation loop
+        function animate() {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Draw cityscape
+            buildings.forEach(building => {
+                // Draw building
+                ctx.fillStyle = building.color;
+                ctx.fillRect(building.x, canvas.height - building.height, building.width, building.height);
+                
+                // Draw windows
+                const windowWidth = building.width / 10;
+                const windowHeight = building.height / 15;
+                building.windows.forEach(window => {
+                    ctx.fillStyle = window.lit ? `hsl(${40 + Math.random() * 30}, 100%, 80%)` : 'rgba(30, 30, 60, 0.5)';
+                    ctx.fillRect(
+                        building.x + window.x * (building.width - windowWidth),
+                        canvas.height - building.height + window.y * building.height,
+                        windowWidth,
+                        windowHeight
+                    );
+                });
+                
+                // Move buildings
+                building.x -= building.speed;
+                if (building.x < -building.width) {
+                    building.x = canvas.width;
+                }
+            });
+            
+            // Draw robot
+            if (robot.rising && robot.y > canvas.height - 300) {
+                robot.y -= 1;
+            } else {
+                robot.rising = false;
+            }
+            
+            robot.parts.forEach(part => {
+                if (part.type === 'head') {
+                    ctx.fillStyle = 'rgba(100, 200, 255, 0.8)';
+                    ctx.beginPath();
+                    ctx.arc(robot.x + part.offsetX, robot.y + part.offsetY, part.radius, 0, Math.PI * 2);
+                    ctx.fill();
+                    
+                    // Eyes
+                    ctx.fillStyle = 'rgba(255, 100, 100, 0.9)';
+                    ctx.beginPath();
+                    ctx.arc(robot.x - 10, robot.y + part.offsetY, 5, 0, Math.PI * 2);
+                    ctx.arc(robot.x + 10, robot.y + part.offsetY, 5, 0, Math.PI * 2);
+                    ctx.fill();
+                } else if (part.type === 'torso') {
+                    ctx.fillStyle = 'rgba(150, 150, 255, 0.7)';
+                    ctx.fillRect(
+                        robot.x - part.width / 2,
+                        robot.y + part.offsetY,
+                        part.width,
+                        part.height
+                    );
+                } else if (part.type === 'arm' || part.type === 'leg') {
+                    part.angle += part.swing;
+                    ctx.strokeStyle = part.type === 'arm' ? 'rgba(200, 200, 255, 0.8)' : 'rgba(180, 180, 255, 0.8)';
+                    ctx.lineWidth = part.type === 'arm' ? 8 : 10;
+                    ctx.beginPath();
+                    ctx.moveTo(robot.x, robot.y + (part.type === 'arm' ? -30 : 40));
+                    const endX = robot.x + (part.left ? -1 : 1) * Math.cos(part.angle) * part.length;
+                    const endY = robot.y + (part.type === 'arm' ? -30 : 40) + Math.sin(part.angle) * part.length;
+                    ctx.lineTo(endX, endY);
+                    ctx.stroke();
+                    
+                    // Joint
+                    ctx.fillStyle = 'rgba(100, 200, 255, 0.9)';
+                    ctx.beginPath();
+                    ctx.arc(
+                        robot.x + (part.left ? -1 : 1) * (part.type === 'arm' ? 30 : 20),
+                        robot.y + (part.type === 'arm' ? -30 : 40),
+                        5,
+                        0,
+                        Math.PI * 2
+                    );
+                    ctx.fill();
+                }
+            });
+            
+            // Create fireworks occasionally
+            if (Math.random() < 0.03) {
+                createFirework();
+            }
+            
+            // Update and draw fireworks
+            particles.forEach((particle, index) => {
+                particle.x += particle.vx;
+                particle.y += particle.vy;
+                particle.vy += particle.gravity;
+                particle.life--;
+                
+                if (particle.life <= 0) {
+                    // Explode
+                    if (!particle.exploded) {
+                        for (let i = 0; i < 50; i++) {
+                            const angle = Math.random() * Math.PI * 2;
+                            const speed = Math.random() * 3 + 1;
+                            particles.push({
+                                x: particle.x,
+                                y: particle.y,
+                                vx: Math.cos(angle) * speed,
+                                vy: Math.sin(angle) * speed,
+                                radius: Math.random() * 3 + 1,
+                                color: particle.color,
+                                life: 30 + Math.random() * 70,
+                                gravity: 0.05,
+                                exploded: true
+                            });
+                        }
+                        particles.splice(index, 1);
+                    } else {
+                        particles.splice(index, 1);
+                    }
+                } else {
+                    ctx.beginPath();
+                    ctx.arc(particle.x, particle.y, particle.radius, 0, Math.PI * 2);
+                    ctx.fillStyle = particle.color;
+                    ctx.fill();
+                }
+            });
+            
+            requestAnimationFrame(animate);
+        }
+        
+        function createFirework() {
+            const colors = [
+                `hsl(${Math.random() * 60 + 190}, 100%, 70%)`,
+                `hsl(${Math.random() * 60 + 10}, 100%, 70%)`,
+                `hsl(${Math.random() * 60 + 300}, 100%, 70%)`
+            ];
+            
+            particles.push({
+                x: Math.random() * canvas.width,
+                y: canvas.height,
+                vx: (Math.random() - 0.5) * 2,
+                vy: -Math.random() * 8 - 4,
+                radius: 3,
+                color: colors[Math.floor(Math.random() * colors.length)],
+                life: 100 + Math.random() * 100,
+                gravity: 0.1,
+                exploded: false
+            });
+        }
+        
+        animate();
+    </script>
+</body>
+</html>
